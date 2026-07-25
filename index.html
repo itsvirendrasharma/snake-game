@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Snake Game Mobile</title>
+</head>
+<body>
+    <!-- ==========================================
+         HEADER WITH MENU
+         ========================================== -->
+    <div class="header" id="mainHeader">
+        <div class="title">🐍 Snake Game</div>
+        <button class="menu-button" title="Menu" id="menuBtn" aria-label="Menu">⋮</button>
+    </div>
+
+    <!-- Dropdown Menu -->
+    <div class="dropdown-menu" id="dropdownMenu">
+        <div class="dropdown-item" id="settingsBtn">⚙️ Settings</div>
+        <div class="dropdown-item" id="helpBtn">❓ Help</div>
+        <div class="dropdown-item" id="developerBtn">👨‍💻 Developer</div>
+    </div>
+
+    <!-- ==========================================
+         GAME CONTAINER
+         ========================================== -->
+    <div class="game-container" id="gameContainer">
+        <!-- Score Board -->
+        <div class="score-board">
+            <div class="score-item">
+                <span>Score:</span>
+                <span id="score">0</span>
+            </div>
+            <div class="score-item">
+                <span>High Score:</span>
+                <span id="highScore">0</span>
+            </div>
+        </div>
+
+        <!-- Game Canvas -->
+        <canvas id="gameCanvas" width="400" height="400"></canvas>
+
+        <!-- Game Over Overlay -->
+        <div class="game-over" id="gameOver">
+            <h2>Game Over!</h2>
+            <p>Final Score: <span id="finalScore">0</span></p>
+            <button class="action-btn" id="restartBtn">Play Again</button>
+            <p style="font-size: 12px;">aagle bar aache se khelna</p>
+        </div>
+
+        <!-- Mobile Control Buttons - IMPROVED LAYOUT -->
+        <div class="controls">
+            <div class="control-row">
+                <button class="control-btn" id="upBtn" aria-label="Up">↑</button>
+            </div>
+            <div class="control-row">
+                <button class="control-btn" id="leftBtn" aria-label="Left">←</button>
+                <button class="control-btn" id="downBtn" aria-label="Down">↓</button>
+                <button class="control-btn" id="rightBtn" aria-label="Right">→</button>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="action-btn" id="startBtn">Start Game</button>
+            <button class="action-btn" id="pauseBtn">Pause</button>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         SETTINGS MODAL
+         ========================================== -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">⚙️ Settings</h2>
+                <button class="close-btn" id="closeSettings">&times;</button>
+            </div>
+
+            <!-- Theme Selection -->
+            <div class="setting-group">
+                <label class="setting-label">🎨 Theme</label>
+                <div class="theme-options">
+                    <button class="theme-btn active" data-theme="dark">🌙 Dark</button>
+                    <button class="theme-btn" data-theme="light">☀️ Light</button>
+                    <button class="theme-btn" data-theme="retro">👾 Retro</button>
+                    <button class="theme-btn" data-theme="ocean">🌊 Ocean</button>
+                    <button class="theme-btn" data-theme="sunset">🌅 Sunset</button>
+                    <button class="theme-btn" data-theme="cyberpunk">🤖 Cyberpunk</button>
+                    <button class="theme-btn" data-theme="forest">🌲 Forest</button>
+                </div>
+            </div>
+
+            <!-- Speed Selection -->
+            <div class="setting-group">
+                <label class="setting-label">⚡ Game Speed</label>
+                <div class="slider-container">
+                    <input type="range" min="1" max="10" value="5" class="slider" id="speedSlider">
+                    <span class="slider-value" id="speedValue">5</span>
+                </div>
+                <p style="font-size: 12px; opacity: 0.7; margin-top: 5px;">Higher = Faster</p>
+            </div>
+
+            <!-- Level Selection -->
+            <div class="setting-group">
+                <label class="setting-label">🎯 Starting Level</label>
+                <div class="level-options">
+                    <button class="level-btn active" data-level="1">Easy</button>
+                    <button class="level-btn" data-level="2">Medium</button>
+                    <button class="level-btn" data-level="3">Hard</button>
+                </div>
+                <p style="font-size: 12px; opacity: 0.7; margin-top: 5px;">
+                    Easy: Snake wraps around walls<br>
+                    Medium/Hard: Wall collision = Game Over
+                </p>
+            </div>
+
+            <!-- Save Button -->
+            <button class="action-btn" id="saveSettings" style="width: 100%; margin-top: 20px;">
+                💾 Save Settings
+            </button>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         HELP MODAL
+         ========================================== -->
+    <div class="modal" id="helpModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">❓ How to Play</h2>
+                <button class="close-btn" id="closeHelp">&times;</button>
+            </div>
+
+            <div class="help-section">
+                <h3>🎮 Game Objective</h3>
+                <p>Control the snake to eat food (red squares) and grow longer. Avoid hitting your own body!</p>
+            </div>
+
+            <div class="help-section">
+                <h3>🕹️ Controls</h3>
+                <ul>
+                    <li><span class="key-indicator">↑</span> <span class="key-indicator">↓</span> <span class="key-indicator">←</span> <span class="key-indicator">→</span> Arrow keys or on-screen buttons</li>
+                    <li><span class="key-indicator">SPACE</span> Pause/Resume game</li>
+                    <li><span class="key-indicator">ENTER</span> Start new game</li>
+                </ul>
+            </div>
+
+            <div class="help-section">
+                <h3>📊 Scoring</h3>
+                <ul>
+                    <li>Each food eaten = +10 points</li>
+                    <li>Your high score is saved automatically</li>
+                    <li>Speed increases as you grow longer</li>
+                </ul>
+            </div>
+
+            <div class="help-section">
+                <h3>🎯 Difficulty Levels</h3>
+                <ul>
+                    <li><strong>Easy:</strong> Snake wraps around walls (no wall collision)</li>
+                    <li><strong>Medium:</strong> Hitting walls ends the game</li>
+                    <li><strong>Hard:</strong> Faster starting speed + wall collision</li>
+                </ul>
+            </div>
+
+            <div class="help-section">
+                <h3>💡 Tips & Tricks</h3>
+                <ul>
+                    <li>Plan your moves ahead to avoid trapping yourself</li>
+                    <li>In Easy mode, use wall wrapping strategically</li>
+                    <li>Practice makes perfect - keep playing!</li>
+                    <li>Adjust game speed in settings for your comfort</li>
+                    <li>Try different themes for a fresh experience</li>
+                </ul>
+            </div>
+
+            <div class="help-section">
+                <h3>⚙️ Settings</h3>
+                <p>Customize your experience:</p>
+                <ul>
+                    <li><strong>Themes:</strong> 7 unique themes to choose from</li>
+                    <li><strong>Speed:</strong> Adjust game speed from 1 (slowest) to 10 (fastest)</li>
+                    <li><strong>Level:</strong> Easy (wall wrap), Medium, or Hard</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         DEVELOPER MODAL (LUXURY DESIGN)
+         ========================================== -->
+    <div class="modal" id="developerModal">
+        <div class="modal-content" style="padding: 0; max-width: 600px; background: transparent; box-shadow: none;">
+            <div class="developer-page">
+                <div class="dev-topbar">
+                    <div class="left-actions">
+                        <div class="dev-chip" title="Profile">
+                            <span>✨</span>
+                            <span>Developer Profile</span>
+                        </div>
+                    </div>
+                    <button class="dev-icon-btn" id="closeDeveloper" title="Close">✕</button>
+                </div>
+
+                <div class="dev-hero">
+                    <div class="dev-avatar-wrap" aria-hidden="true">
+                        <div class="dev-avatar">
+                            <img src="https://media.licdn.com/dms/image/v2/D5603AQHZud606NJLsw/profile-displayphoto-crop_800_800/B56ZtMQ_0gHsAU-/0/1766511088595?e=1769644800&v=beta&t=4C22UzKOu0OYTaOaGzvf7hNHYIG9lTblY4rI7OGmLMI" alt="Virendra Sharma" />
+                        </div>
+                    </div>
+
+                    <div class="dev-name">VIRENDRA SHARMA</div>
+                    <div class="dev-title">Full Stack Developer • UI/UX Enthusiast</div>
+                    <div class="dev-subtitle">
+                        Building premium, fast and beautiful web experiences with a focus on clean UI, great UX, and production-ready code.
+                    </div>
+                </div>
+
+                <div class="dev-sections">
+                    <!-- About -->
+                    <div class="dev-card">
+                        <h3><span class="badge">🧾</span> About</h3>
+                        <p>
+                            I craft modern web applications with a minimal, premium aesthetic—prioritizing performance, accessibility,
+                            and delightful micro-interactions. This Snake Game is built using pure HTML, CSS, and JavaScript with 7 unique themes and multiple difficulty levels.
+                        </p>
+                    </div>
+
+                    <!-- Skills -->
+                    <div class="dev-card">
+                        <h3><span class="badge">🧠</span> Skills</h3>
+                        <div class="skills-grid">
+                            <div class="skill-pill">UI/UX</div>
+                            <div class="skill-pill">JavaScript</div>
+                            <div class="skill-pill">HTML5</div>
+                            <div class="skill-pill">CSS3</div>
+                            <div class="skill-pill">Bootstrap</div>
+                            <div class="skill-pill">Full-Stack</div>
+                            <div class="skill-pill">C++</div>
+                            <div class="skill-pill">Data Structures</div>
+                            <div class="skill-pill">Algorithms</div>
+                            <div class="skill-pill">Responsive Design</div>
+                            <div class="skill-pill">Animations</div>
+                        </div>
+                    </div>
+
+                    <!-- Links -->
+                    <div class="dev-card">
+                        <h3><span class="badge">🔗</span> Links</h3>
+                        <div class="links-grid">
+                            <a class="link-btn" href="https://github.com/sharmajivirendra21-cmd" target="_blank" rel="noopener">
+                                🐙 GitHub
+                            </a>
+                            <a class="link-btn" href="https://www.linkedin.com/in/virendra-sharma-8754a2375" target="_blank" rel="noopener">
+                                💼 LinkedIn
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Contact -->
+                    <div class="dev-card">
+                        <h3><span class="badge">📨</span> Contact</h3>
+
+                        <div class="contact-row">
+                            <div class="contact-item">
+                                <div class="ic">📧</div>
+                                <div class="txt">
+                                    <div class="label">Email</div>
+                                    <div class="value" id="devEmailText">virendrasharma64370@gmail.com</div>
+                                </div>
+                            </div>
+
+                            <div class="contact-item">
+                                <div class="ic">📱</div>
+                                <div class="txt">
+                                    <div class="label">Phone</div>
+                                    <div class="value">+91 84358 50948</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="contact-actions">
+                            <button class="pill-btn primary" id="copyEmailBtn">Copy Email</button>
+                            <a class="pill-btn" href="mailto:virendrasharma64370@gmail.com" style="text-decoration:none;display:grid;place-items:center;">
+                                Email
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  <script></script>
+</body>
+</html>
